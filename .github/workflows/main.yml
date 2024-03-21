@@ -17,5 +17,6 @@ jobs:
         run: make html
       - name: Create key file
         run: echo "${{ secrets.SECRET_KEY }}" > p.key
+      - run: chmod 700 p.key
       - name: Sync files with server
         run: rsync -Pav -e "ssh -i p.key" output/ server@dreamer20.website:test
