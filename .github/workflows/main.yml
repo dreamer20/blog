@@ -12,6 +12,6 @@ jobs:
       - name: List files in the repository
         run: python3 -m pip -r requirements.txt
       - name: Install gcc
-        uses: Dup4/actions-setup-gcc@v1
+
       - name: Run make
       - run: make html
