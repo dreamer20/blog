@@ -1,14 +1,13 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Deploy to server
+run-name: Generate files and upload to server
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  Generate-and-Deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
       - name: List files in the repository
         run: python3 -m pip install -r requirements.txt
       - name: Install gcc
