@@ -15,3 +15,7 @@ jobs:
         uses: Dup4/actions-setup-gcc@v1
       - name: Generate html
         run: make html
+      - name: Create key file
+        run: echo "${{ secret.SECRET_KEY }}" > p.key
+      - name: Sync files with server
+        run: rsync -Pav -e "ssh -i p.key" output/ server@dreamer20.website:test
