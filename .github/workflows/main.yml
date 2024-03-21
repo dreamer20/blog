@@ -17,7 +17,7 @@ jobs:
         run: make html
       - name: Create key file
         run: echo "${{ secrets.SECRET_KEY }}" > p.key
-      - run: mkdir -p ~/.ssh/known_hosts
+      - run: mkdir -p ~/.ssh
       - run: echo "${{ secrets.KNOWN_HOST }}" >> ~/.ssh/known_hosts
       - run: chmod 700 p.key
       - name: Sync files with server
