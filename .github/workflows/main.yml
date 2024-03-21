@@ -11,4 +11,7 @@ jobs:
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - name: List files in the repository
         run: python3 -m pip install -r requirements.txt
-      - uses: Dup4/actions-setup-gcc@v1
+      - name: Install gcc
+        uses: Dup4/actions-setup-gcc@v1
+      - name: Generate html
+        run: make html
