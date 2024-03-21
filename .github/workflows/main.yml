@@ -21,4 +21,4 @@ jobs:
       - run: echo "${{ secrets.KNOWN_HOST }}" >> ~/.ssh/known_hosts
       - run: chmod 700 p.key
       - name: Sync files with server
-        run: rsync -Pav -e "ssh -i p.key" output/ server@dreamer20.website:test
+        run: rsync -Pav -e "ssh -i p.key" output/ server@dreamer20.website:/var/www/blog
