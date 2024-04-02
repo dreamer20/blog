@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="generator" content="Pelican" />
-        <title>dreamer20.web</title>
+        <title>dreamer20.web - ssh-agent</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 </head>
 
@@ -48,66 +48,6 @@
 <div class="highlight"><pre><span></span><code>ssh-add -t 1h
 </code></pre></div>                </article>
             </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/ispolzovanie-rsync-dlia-peredachi-failov-pri-pomoshchi-obolochki-ssh-i-kliuchei.html" rel="bookmark"
-                           title="Permalink to Использование rsync для передачи файлов при помощи оболочки ssh и ключей">Использование rsync для передачи файлов при помощи оболочки ssh и ключей</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2024-03-21T15:26:00+03:00">
-                Published: Thu 21 March 2024
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/dreamer20.html">dreamer20</a>
-        </address>
-<p>In <a href="/category/zametki.html">Заметки</a>.</p>
-<p>tags: <a href="/tag/rsync.html">rsync</a> <a href="/tag/ssh.html">ssh</a> </p>
-</footer><!-- /.post-info -->                <p>rsync позволяет выполнять синхронизацию файлов и каталогов в двух местах. При синхронизации rsync не копирует файлы которые не изменялись с прошлой синхронизации.</p>
-<p>Для начала сгенерируем ключ для безпарольного доступа к удаленному хосту (passphrase оставим пустым):</p>
-<div class="highlight"><pre><span></span><code>ssh-keygen
-</code></pre></div>
-
-<p>Сгенерированный публичный ключ необходимо добавить на удаленный хост. Для этого лучше всего подходит команда …</p>
-                <a class="readmore" href="/ispolzovanie-rsync-dlia-peredachi-failov-pri-pomoshchi-obolochki-ssh-i-kliuchei.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/polzovatelskii-konfiguratsionnyi-fail-ssh.html" rel="bookmark"
-                           title="Permalink to Пользовательский конфигурационный файл ssh">Пользовательский конфигурационный файл ssh</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2024-02-04T11:40:00+03:00">
-                Published: Sun 04 February 2024
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/dreamer20.html">dreamer20</a>
-        </address>
-<p>In <a href="/category/zametki.html">Заметки</a>.</p>
-<p>tags: <a href="/tag/ssh.html">ssh</a> </p>
-</footer><!-- /.post-info -->                <p>Для удобства работы с подключениями по ssh можно использовать специальный конфигурационный файл. Он действует для отдельного пользователя и должен быть расположен в пользовательском каталоге <code>.ssh</code>, где также находятся и ключи.</p>
-<p>Создами конфигурационный файл в .ssh каталоге:</p>
-<div class="highlight"><pre><span></span><code>touch ~/.shh/config
-</code></pre></div>
-
-<p>Пользовательская конфигурация позволяет упростить вход на удаленные хосты прописав параметры, по …</p>
-                <a class="readmore" href="/polzovatelskii-konfiguratsionnyi-fail-ssh.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
