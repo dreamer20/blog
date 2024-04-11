@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>dreamer20.web - ansible</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">dreamer20.web</a></h1>
+                <nav><ul>
+                    <li><a href="/category/zametki.html">Заметки</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/poluchenie-dostupa-k-udalennym-khostam-cherez-bastion.html">Получение доступа к удаленным хостам через бастион</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2024-10-04T15:16:00+03:00">
+                Published: Fri 04 October 2024
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/dreamer20.html">dreamer20</a>
+        </address>
+<p>In <a href="/category/zametki.html">Заметки</a>.</p>
+<p>tags: <a href="/tag/ansible.html">ansible</a> <a href="/tag/ssh.html">ssh</a> </p>
+</footer><!-- /.post-info --><p>Ansible позволяет получать доступ к удаленным хостам через хост посредник (бастион). При этом нет необходимости проводить дополнительную настройку для хоста, помимо как наличия доступа при помощи ssh.</p>
+<p>Для удобства сгенерируем ключ который будет использоваться для доступа на бастион и удаленные хосты (парольную фразу устанавливать не будем):</p>
+<div class="highlight"><pre><span></span><code>ssh-keygen
+</code></pre></div>
+
+<p>Далее скопируем публичный ключ на хосты (предварительно должна быть разрешена аутентификация ssh по паролю):</p>
+<div class="highlight"><pre><span></span><code><span class="nx">ssh</span><span class="o">-</span><span class="nx">copy</span><span class="o">-</span><span class="nx">id</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">user</span><span class="p">&gt;</span><span class="err">@</span><span class="p">&lt;</span><span class="nx">bastion_host_address</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<p>По задумке мы не имеем прямого дуступа к необходимым удаленным хостам, поэтому чтобы добавить на эти хосты публичный ключ воспользуеся командой:</p>
+<div class="highlight"><pre><span></span><code><span class="nx">cat</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="nx">ssh</span><span class="o">/</span><span class="nx">id_rsa</span><span class="p">.</span><span class="nx">pub</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">ssh</span><span class="w"> </span><span class="o">-</span><span class="nx">J</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">bastion_user</span><span class="p">&gt;</span><span class="err">@</span><span class="p">&lt;</span><span class="nx">bastion_host_address</span><span class="p">&gt;</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">remote_user</span><span class="p">&gt;</span><span class="err">@</span><span class="p">&lt;</span><span class="nx">remote_host_address</span><span class="p">&gt;</span><span class="w"> </span><span class="o">-</span><span class="nx">T</span><span class="w"> </span><span class="s">&quot;cat &gt;&gt; ~/.ssh/authorized_keys&quot;</span>
+</code></pre></div>
+
+<p>id_rsa.pub - имя публичного ключа сгенерированного по умолчанию</p>
+<p>На удаленных хостах используется публичный ключ который мы сгенерировали непосредственно на нашем пк.</p>
+<p>Теперь можно приступить непосредственно к настройке <code>ansible</code>. Для этого нам понадобится файл inventory.ini с списком хостов с такой информацией:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[remote_hosts]</span>
+<span class="na">&lt;remote_host_address&gt;</span>
+<span class="na">&lt;another_remote_host_address&gt;</span>
+
+<span class="k">[remote_hosts:vars]</span>
+<span class="na">ansible_ssh_common_args</span><span class="o">=</span><span class="s">&#39;-o ProxyCommand=&quot;ssh -W %h:%p -q &lt;user&gt;@&lt;bastion_host_address&gt;&quot;&#39;</span>
+</code></pre></div>
+
+<p>Все что находится в кавычках является аргументами команды ssh. Аргумент <code>-W</code> говорит ssh выполнить проброс ввода и вывода через хост <code>&lt;bastion_host_address&gt;</code>.</p>
+<p>Теперь можно выполнять команды <code>ansible</code> как обычно.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                            <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

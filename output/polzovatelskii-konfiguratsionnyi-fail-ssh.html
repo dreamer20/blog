@@ -6,7 +6,7 @@
         <meta name="generator" content="Pelican" />
         <title>Пользовательский конфигурационный файл ssh</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
-        <meta name="description" content="Для удобства работы с подключениями по ssh можно использовать специальный конфигурационный файл. Он действует для отдельного пользователя и должен..." />
+        <meta name="description" content="Генерация приватного ключа Для генерации приватного ключа при помощи openssl необходимо использовать команду openssl genpkey: openssl genpkey \..." />
 </head>
 
 <body id="index" class="home">
@@ -35,32 +35,40 @@
         </address>
 <p>In <a href="/category/zametki.html">Заметки</a>.</p>
 <p>tags: <a href="/tag/ssh.html">ssh</a> </p>
-</footer><!-- /.post-info -->      <p>Для удобства работы с подключениями по ssh можно использовать специальный конфигурационный файл. Он действует для отдельного пользователя и должен быть расположен в пользовательском каталоге <code>.ssh</code>, где также находятся и ключи.</p>
-<p>Создами конфигурационный файл в .ssh каталоге:</p>
-<div class="highlight"><pre><span></span><code>touch ~/.shh/config
+</footer><!-- /.post-info -->      <h4>Генерация приватного ключа</h4>
+<p>Для генерации приватного ключа при помощи openssl необходимо использовать команду <code>openssl genpkey</code>:</p>
+<div class="highlight"><pre><span></span><code>openssl genpkey \
+-algorithm RSA \
+-pkeyopt rsa_keygen_bits:2048 \
+-aes-128-cbc \
+-out pkey.key
 </code></pre></div>
 
-<p>Пользовательская конфигурация позволяет упростить вход на удаленные хосты прописав параметры, по которым будет осуществлятся вход. Синтаксис таков:</p>
-<div class="highlight"><pre><span></span><code>Host &lt;hostname&gt;
-    SSH_OPTION &lt;value&gt;
-    SSH_OPTION &lt;value&gt;
+<p>Используещиеся опции:
+- <code>algorithm</code> - выбор алгоритма шифрования (в данном случае <code>RSA</code>)
+- <code>pkeyopt</code> - параметры используещиеся для генерации (здесь количество бит в генерируемом ключе)
+- <code>aes-128-cbc</code> - стандарт шифрования, позволяет усилить защиту ключа
+- <code>out</code> - выходной файл для ключа</p>
+<p>На выходе получаем файл <code>pkey.key</code> с ключем внутри.</p>
+<p>Так как RSA это алгоритм с открытым ключем то мы можем получить публичный ключ отдельно из сгенерированного файла при помощи <code>openssl pkey</code>:</p>
+<div class="highlight"><pre><span></span><code>openssl pkey -in pkey.key -pubout -out pubkey.key
 </code></pre></div>
 
-<p>Здесь <code>&lt;hostname&gt;</code> может выступать в роли имени удаленного хоста, псевдонима или паттерна для ssh подключения к которому будут применятся параметры. К примеру:</p>
-<div class="highlight"><pre><span></span><code>Host MyRemoteServ
-    HostName 182.231.100.22
-    User server
+<p>Использующиеся опции:
+- <code>in</code> - файл для чтения (<code>pkey.key</code>)
+- <code>pubout</code> - получить только публичный ключ
+- <code>out</code> - выходной файл для ключа</p>
+<p>Публичный ключ будет сохранен в <code>pubkey.key</code>.</p>
+<h3>Создание запроса на подпись сертификата (Certificate Signing Requests)</h3>
+<p>Как только вы сгенерировали приватный ключ вы можете создать так называемый запрос на подпись сертификата (SCR). Он позволяет центру сертификации (Certification authority, CA) выпустить сертификат со своей подписью и публичным ключем, а также дополнительной информацией о владельце публичного ключа. SCR всегда подписывается приватным ключем соотетствующим публичному ключу для которого необходим сертификат. </p>
+<p>Создание запроса выполняется командой <code>openssl req</code>. В ходе выполнения команды будет предложено ввести информацию о сущьности для которой будет запрашиваться сертификат:</p>
+<div class="highlight"><pre><span></span><code>openssl req -new -key pkey.key -out req.csr
 </code></pre></div>
 
-<p>Запись данная выше позволяет выполнить соединение используя команду <code>ssh MyRemoteServ</code>. По умолчанию будет подставлен адрес хоста и имя пользователя. В качестве параметров можно также указать порт, путь к приватному ключу и т. д.:</p>
-<p>В качестве имени можно указать паттерн, который будет применятся к имени во время установки соединения:</p>
-<div class="highlight"><pre><span></span><code>Host *
-    User root
-</code></pre></div>
-
-<p>Данная запись подставляет к любому имени хоста в качестве пользователя имя root. К примеру выполнение команды <code>ssh 192.168.22.1</code> будет означать:</p>
-<div class="highlight"><pre><span></span><code><span class="n">ssh</span><span class="w"> </span><span class="n">root</span><span class="mf">@192.168.22.1</span>
-</code></pre></div>
+<p>Использующиеся опции:
+- <code>new</code> - опция указывающая что необходимо сгенерировать новый запрос на подпись сертификата.
+- <code>key</code> - приватный ключ пользователя
+- <code>out</code> - выходной файл</p>
     </div><!-- /.entry-content -->
 
   </article>

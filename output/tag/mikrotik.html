@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="generator" content="Pelican" />
-        <title>dreamer20.web - Categories</title>
+        <title>dreamer20.web - mikrotik</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 </head>
 
@@ -16,13 +16,26 @@
                 </ul></nav>
         </header><!-- /#banner -->
 
-<section id="content" class="body">
-    <h1>Categories for dreamer20.web</h1>
-    <ul>
-        <li><a href="/category/zametki.html">Заметки</a> (6)</li>
-    </ul>
-</section>
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/rezultat-komandy-ping-v-peremennoi-na-sistemakh-mikrotik.html">Результат команды ping в переменной на системах Mikrotik</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2024-03-04T11:40:00+03:00">
+                Published: Mon 04 March 2024
+        </abbr>
 
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/dreamer20.html">dreamer20</a>
+        </address>
+<p>In <a href="/category/zametki.html">Заметки</a>.</p>
+<p>tags: <a href="/tag/mikrotik.html">mikrotik</a> <a href="/tag/ping.html">ping</a> </p>
+</footer><!-- /.post-info --><p>Начиная с седьмой версии RouterOS, при получении результата выполнения команды <code>ping</code> в переменную, были проведены некоторые изменения. Теперь для получения гарантированного результата необходимо указывать значение параметра <code>count</code> команды <code>ping</code> не менее <code>3</code>.</p>
+<div class="highlight"><pre><span></span><code>:local pingResult [ping 8.8.8.8 count=2] # Значение pingResult осталось пустым, даже если пинг удачный
+:local pingResult [ping 8.8.8.8 count=3] # При удачном пинге значение pingResult будет 3
+</code></pre></div>
+
+<p>Следует учитывать данную особенность при написании скриптов и не ставить маленькое значение параметра <code>count</code>.</p>                </article>
+            </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

@@ -18,7 +18,56 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/ispolzovanie-ssh-agent-dlia-odnorazovogo-vvoda-parolnoi-frazy-dlia-kliucha.html">Использование ssh-agent для одноразового ввода парольной фразы для ключа</a></h1>
+                    <h1 class="entry-title"><a href="/poluchenie-dostupa-k-udalennym-khostam-cherez-bastion.html">Получение доступа к удаленным хостам через бастион</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2024-10-04T15:16:00+03:00">
+                Published: Fri 04 October 2024
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/dreamer20.html">dreamer20</a>
+        </address>
+<p>In <a href="/category/zametki.html">Заметки</a>.</p>
+<p>tags: <a href="/tag/ansible.html">ansible</a> <a href="/tag/ssh.html">ssh</a> </p>
+</footer><!-- /.post-info --><p>Ansible позволяет получать доступ к удаленным хостам через хост посредник (бастион). При этом нет необходимости проводить дополнительную настройку для хоста, помимо как наличия доступа при помощи ssh.</p>
+<p>Для удобства сгенерируем ключ который будет использоваться для доступа на бастион и удаленные хосты (парольную фразу устанавливать не будем):</p>
+<div class="highlight"><pre><span></span><code>ssh-keygen
+</code></pre></div>
+
+<p>Далее скопируем публичный ключ на хосты (предварительно должна быть разрешена аутентификация ssh по паролю):</p>
+<div class="highlight"><pre><span></span><code><span class="nx">ssh</span><span class="o">-</span><span class="nx">copy</span><span class="o">-</span><span class="nx">id</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">user</span><span class="p">&gt;</span><span class="err">@</span><span class="p">&lt;</span><span class="nx">bastion_host_address</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<p>По задумке мы не имеем прямого дуступа к необходимым удаленным хостам, поэтому чтобы добавить на эти хосты публичный ключ воспользуеся командой:</p>
+<div class="highlight"><pre><span></span><code><span class="nx">cat</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="nx">ssh</span><span class="o">/</span><span class="nx">id_rsa</span><span class="p">.</span><span class="nx">pub</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">ssh</span><span class="w"> </span><span class="o">-</span><span class="nx">J</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">bastion_user</span><span class="p">&gt;</span><span class="err">@</span><span class="p">&lt;</span><span class="nx">bastion_host_address</span><span class="p">&gt;</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">remote_user</span><span class="p">&gt;</span><span class="err">@</span><span class="p">&lt;</span><span class="nx">remote_host_address</span><span class="p">&gt;</span><span class="w"> </span><span class="o">-</span><span class="nx">T</span><span class="w"> </span><span class="s">&quot;cat &gt;&gt; ~/.ssh/authorized_keys&quot;</span>
+</code></pre></div>
+
+<p>id_rsa.pub - имя публичного ключа сгенерированного по умолчанию</p>
+<p>На удаленных хостах используется публичный ключ который мы сгенерировали непосредственно на нашем пк.</p>
+<p>Теперь можно приступить непосредственно к настройке <code>ansible</code>. Для этого нам понадобится файл inventory.ini с списком хостов с такой информацией:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[remote_hosts]</span>
+<span class="na">&lt;remote_host_address&gt;</span>
+<span class="na">&lt;another_remote_host_address&gt;</span>
+
+<span class="k">[remote_hosts:vars]</span>
+<span class="na">ansible_ssh_common_args</span><span class="o">=</span><span class="s">&#39;-o ProxyCommand=&quot;ssh -W %h:%p -q &lt;user&gt;@&lt;bastion_host_address&gt;&quot;&#39;</span>
+</code></pre></div>
+
+<p>Все что находится в кавычках является аргументами команды ssh. Аргумент <code>-W</code> говорит ssh выполнить проброс ввода и вывода через хост <code>&lt;bastion_host_address&gt;</code>.</p>
+<p>Теперь можно выполнять команды <code>ansible</code> как обычно.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/ispolzovanie-ssh-agent-dlia-odnorazovogo-vvoda-parolnoi-frazy-dlia-kliucha.html" rel="bookmark"
+                           title="Permalink to Использование ssh-agent для одноразового ввода парольной фразы для ключа">Использование ssh-agent для одноразового ввода парольной фразы для ключа</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2024-03-21T15:30:00+03:00">
                 Published: Thu 21 March 2024
@@ -29,29 +78,16 @@
         </address>
 <p>In <a href="/category/zametki.html">Заметки</a>.</p>
 <p>tags: <a href="/tag/ssh.html">ssh</a> <a href="/tag/ssh-agent.html">ssh-agent</a> </p>
-</footer><!-- /.post-info --><p>ssh-agent позволяет хранить ключи для SSH в памяти, готовые к использования ssh. Это позволяет не вводить пароль от ключа каждый раз, когда вы подключаетесь к серверу.</p>
+</footer><!-- /.post-info -->                <p>ssh-agent позволяет хранить ключи для SSH в памяти, готовые к использования ssh. Это позволяет не вводить пароль от ключа каждый раз, когда вы подключаетесь к серверу.</p>
 <p>Для начала ssh-agent должен быть запущен. Для этого необходимо выполнить команду:</p>
 <div class="highlight"><pre><span></span><code>eval `ssh-agent`
 </code></pre></div>
 
 <p>Команда запускает ssh-agent и устанавливает определенные переменные окружения для оболочки.</p>
-<p>Далее необходимо добавить ключи в ssh-agent. Это можно сделать просто введя команду <code>ssh-add</code>. Без аргументов в агент будет добавлены стандартные приватные ключи ~/.ssh/id_rsa, .ssh/id_dsa, ~/.ssh/id_ecdsa, ~/.ssh/id_ed25519, и ~/.ssh/identity. Если необходимо добавить конкретный ключ необходимо просто указать его в качестве аргумента. Например:</p>
-<div class="highlight"><pre><span></span><code>ssh-add ~/my_private_key
-</code></pre></div>
-
-<p>При этом будет запрошена парольная фраза от ключа.
-Чтобы убедиться что ключи добавлены выполните команду:</p>
-<div class="highlight"><pre><span></span><code>ssh-add -l
-</code></pre></div>
-
-<p>Теперь когда ssh-agent запомнил ключ можно подключаться к удаленному хосту без ввода парольной фразы. ssh-agent работает до закрытия текущей командной оболочки. Если открыть новый терминал, то запуск <code>ssh-agent</code> и добавления ключа с помощью <code>ssh-add</code> необходимо повторять снова (несмотря на то что процесс ssh-agent от предыдущей оболочки до сих пор может существовать). Для дополнительной безопасности можно ограничить использование ключа в оболочке временными рамками при помощи опции <code>-t</code> с командой <code>ssh-add</code>:</p>
-<div class="highlight"><pre><span></span><code>ssh-add -t 1h
-</code></pre></div>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Далее …</p>
+                <a class="readmore" href="/ispolzovanie-ssh-agent-dlia-odnorazovogo-vvoda-parolnoi-frazy-dlia-kliucha.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -82,8 +118,32 @@
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="/polzovatelskii-konfiguratsionnyi-fail-ssh.html" rel="bookmark"
-                           title="Permalink to Пользовательский конфигурационный файл ssh">Пользовательский конфигурационный файл ssh</a></h1>
+                    <h1><a href="/rezultat-komandy-ping-v-peremennoi-na-sistemakh-mikrotik.html" rel="bookmark"
+                           title="Permalink to Результат команды ping в переменной на системах Mikrotik">Результат команды ping в переменной на системах Mikrotik</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2024-03-04T11:40:00+03:00">
+                Published: Mon 04 March 2024
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/dreamer20.html">dreamer20</a>
+        </address>
+<p>In <a href="/category/zametki.html">Заметки</a>.</p>
+<p>tags: <a href="/tag/mikrotik.html">mikrotik</a> <a href="/tag/ping.html">ping</a> </p>
+</footer><!-- /.post-info -->                <p>Начиная с седьмой версии RouterOS, при получении результата выполнения команды <code>ping</code> в переменную, были проведены некоторые изменения. Теперь для получения гарантированного результата необходимо указывать значение параметра <code>count</code> команды <code>ping</code> не менее <code>3</code>.</p>
+<div class="highlight"><pre><span></span><code>:local pingResult [ping 8.8.8.8 count=2] # Значение pingResult осталось пустым, даже если пинг удачный
+:local …</code></pre></div>
+                <a class="readmore" href="/rezultat-komandy-ping-v-peremennoi-na-sistemakh-mikrotik.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/fail-konfiguratsii-ssh.html" rel="bookmark"
+                           title="Permalink to Файл конфигураций ssh">Файл конфигураций ssh</a></h1>
                 </header>
 
                 <div class="entry-content">
@@ -103,6 +163,40 @@
 </code></pre></div>
 
 <p>Пользовательская конфигурация позволяет упростить вход на удаленные хосты прописав параметры, по …</p>
+                <a class="readmore" href="/fail-konfiguratsii-ssh.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/polzovatelskii-konfiguratsionnyi-fail-ssh.html" rel="bookmark"
+                           title="Permalink to Пользовательский конфигурационный файл ssh">Пользовательский конфигурационный файл ssh</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2024-02-04T11:40:00+03:00">
+                Published: Sun 04 February 2024
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/dreamer20.html">dreamer20</a>
+        </address>
+<p>In <a href="/category/zametki.html">Заметки</a>.</p>
+<p>tags: <a href="/tag/ssh.html">ssh</a> </p>
+</footer><!-- /.post-info -->                <h4>Генерация приватного ключа</h4>
+<p>Для генерации приватного ключа при помощи openssl необходимо использовать команду <code>openssl genpkey</code>:</p>
+<div class="highlight"><pre><span></span><code>openssl genpkey \
+-algorithm RSA \
+-pkeyopt rsa_keygen_bits:2048 \
+-aes-128-cbc \
+-out pkey.key
+</code></pre></div>
+
+<p>Используещиеся опции:
+- <code>algorithm</code> - выбор алгоритма шифрования (в данном случае <code>RSA</code>)
+- <code>pkeyopt</code> - параметры используещиеся для генерации (здесь количество бит в генерируемом ключе)
+- <code>aes-128-cbc</code> - стандарт шифрования …</p>
                 <a class="readmore" href="/polzovatelskii-konfiguratsionnyi-fail-ssh.html">read more</a>
                 </div><!-- /.entry-content -->
             </article></li>
