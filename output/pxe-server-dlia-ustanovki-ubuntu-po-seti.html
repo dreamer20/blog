@@ -184,7 +184,7 @@ imgargs<span class="w"> </span>vmlinuz<span class="w"> </span>initrd=initrd<span
 <ul>
 <li><code>${next-server}</code> - переменная, которую предоставляет нам <code>dhcp</code> сервер, в данном случае <code>dnsmasq</code>. В ней находится адрес сервера <code>tftp</code></li>
 <li><code>${root_path}</code> - переменная с корневой директорией в которой находятся файлы <code>IPXE</code> и образа ОС</li>
-<li><code>${os_root}</code> - корневай директория к файлам ОС</li>
+<li><code>${os_root}</code> - корневая директория к файлам ОС</li>
 </ul>
 <p>Сохраним файл и перезапустим <code>dnsmasq</code></p>
 <div class="highlight"><pre><span></span><code>sudo systemctl restart dnsmasq
