@@ -7,6 +7,10 @@ PATH = "content"
 TIMEZONE = 'Europe/Moscow'
 
 DEFAULT_LANG = 'ru'
+PLUGIN_PATHS = ['pelican-plugins']
+PLUGINS = ['readtime', 'neighbors']
+
+THEME = 'themes/Peli-Kiera'
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
