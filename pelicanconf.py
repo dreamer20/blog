@@ -4,6 +4,11 @@ SITEURL = ""
 
 PATH = "content"
 
+STATIC_PATHS = ['extra']
+EXTRA_PATH_METADATA = {
+    'extra/favicon.ico': {'path': 'favicon.ico'},
+}
+
 TIMEZONE = 'Europe/Moscow'
 
 DEFAULT_LANG = 'ru'
