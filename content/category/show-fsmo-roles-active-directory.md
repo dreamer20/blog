@@ -3,7 +3,7 @@ Date: 27.10.2024 21:12
 Category: Заметки
 Tags: Windows server, Active Directory
 
-#### FSMO роли
+## FSMO роли
 
 В настоящее в Windows существует пять ролей FSMO:
 
