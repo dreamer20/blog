@@ -1,5 +1,5 @@
 AUTHOR = 'dreamer20'
-SITENAME = 'dreamer20.web'
+SITENAME = 'itdevspace.website'
 SITEURL = ""
 
 PATH = "content"
