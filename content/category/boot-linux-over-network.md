@@ -5,7 +5,7 @@ Tags: ipxe, dnsmasq, network
 
 iPXE это сетевой загрузчик при помощи которого можно осуществлять установку операционных систем по сети.
 
-#### Установка dnsmasq
+## Установка dnsmasq
 dnsmasq это простой DNS-, DHCP- и TFTP-сервер. Именно то что нужно для организации работы сервера PXE.
 
 Для начала останавливаем system-resolved и убираем из автозапуска чтобы освободить порт для dnsmasq, иначе они будут конфликтовать:
@@ -35,7 +35,7 @@ nameserver 8.8.8.8
 sudo apt install -y dnsmasq
 ```
 
-#### Сборка iPXE
+## Сборка iPXE
 Создадим структуру папок для `PXE`:
 ```
 sudo mkdir -pv /pxeboot/{config,firmware,os-images}
@@ -77,7 +77,7 @@ make bin/ipxe.pxe bin/undionly.kpxe bin/undionly.kkpxe bin/undionly.kkkpxe bin-x
 sudo cp -v bin/{ipxe.pxe,undionly.kpxe,undionly.kkpxe,undionly.kkkpxe} bin-x86_64-efi/ipxe.efi /pxeboot/firmware/
 ```
 
-#### Настройка dnsmasq
+## Настройка dnsmasq
 Создадим на всякий случай копию настроек `dnsmasq`
 ```
 sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
@@ -108,7 +108,7 @@ dhcp-boot=tag:efi-x86_64,firmware/ipxe.efi
 sudo systemctl restart dnsmasq
 ```
 
-#### Установка NFS сервера
+## Установка NFS сервера
 Устанавливаем NFS сервер. Он позволит обращаться к файлам образа ОС по сети:
 ```
 sudo apt install nfs-kernel-server
@@ -129,7 +129,7 @@ sudo nano /etc/exports
 sudo exportfs -av
 ```
 
-#### Подготовка образа ОС
+## Подготовка образа ОС
 Теперь подготовим образ для установки. Для начала скачаем его с оффициального сайта:
 ```
 wget https://releases.ubuntu.com/jammy/ubuntu-22.04.4-live-server-amd64.iso
@@ -155,7 +155,7 @@ sudo rsync -avz /mnt /pxeboot/os-images/mkdir ubuntu-22.04.4-live-server-amd64
 sudo umount /mnt
 ```
 
-#### Создание меню загрузки
+## Создание меню загрузки
 Создадим файл ipxe с меню загрузки:
 ```
 #!ipxe
